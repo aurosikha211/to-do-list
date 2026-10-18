@@ -1,0 +1,268 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #eef0ff;
+  --card: #ffffff;
+  --text: #2b2d42;
+  --muted: #777777;
+  --line: #e6e8f5;
+  --row: #f7f8ff;
+  --accent: #667eea;
+  --ok: #2ecc71;
+  --bad: #e74c3c;
+  --warn: #f39c12;
+}
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding: 24px 14px;
+  min-height: 100vh;
+}
+
+.app {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: var(--card);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.15);
+}
+
+h1 {
+  text-align: center;
+}
+
+.sub {
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+  margin: 4px 0 18px;
+}
+
+/* ---------- Add form ---------- */
+.add {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.field label {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: var(--accent);
+}
+
+.btn-field {
+  align-self: end;
+}
+
+button {
+  font-family: inherit;
+}
+
+#addBtn {
+  padding: 11px 20px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+#addBtn:hover {
+  background: #5568d3;
+}
+
+/* ---------- Filters ---------- */
+.bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tabs button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 10px;
+  background: var(--row);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.tabs button.on {
+  background: var(--accent);
+  color: #fff;
+}
+
+.selects select {
+  padding: 8px;
+  border-radius: 8px;
+  border: 2px solid var(--line);
+  background: var(--card);
+  color: var(--text);
+  margin-left: 4px;
+}
+
+.stats {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+/* ---------- Table ---------- */
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  min-width: 820px;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+th {
+  text-align: left;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  padding: 0 10px;
+}
+
+td {
+  background: var(--row);
+  padding: 12px 10px;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+td:first-child {
+  border-radius: 10px 0 0 10px;
+  border-left: 5px solid var(--accent);
+}
+
+td:last-child {
+  border-radius: 0 10px 10px 0;
+}
+
+tr.done td:first-child {
+  border-left-color: var(--ok);
+}
+
+tr.done .task-text {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--ok);
+  cursor: pointer;
+}
+
+/* ---------- Badges ---------- */
+.badge {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.High   { background: #fde2e0; color: #c0392b; }
+.Medium { background: #fdf0d5; color: #b9770e; }
+.Low    { background: #dcf5e5; color: #1e8449; }
+.cat    { background: #e3e7ff; color: #4251b5; }
+
+.overdue { color: var(--bad); font-weight: 600; }
+.fast    { color: var(--ok);  font-weight: 600; }
+.slow    { color: var(--bad); font-weight: 600; }
+
+/* ---------- Row buttons ---------- */
+.btn-start {
+  background: var(--warn);
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-delete {
+  background: none;
+  border: none;
+  color: var(--bad);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 20px;
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 700px) {
+  .add {
+    grid-template-columns: 1fr 1fr;
+  }
+  .task-field {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---------- Dark mode (follows your device setting) ---------- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15162a;
+    --card: #20223b;
+    --text: #eceefc;
+    --muted: #a0a3c4;
+    --line: #33365a;
+    --row: #262947;
+  }
+  .cat {
+    background: #33386b;
+    color: #c9d0ff;
+  }
+}

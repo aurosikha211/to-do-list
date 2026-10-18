@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>To-Do List with Time Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <h1>📝 My To-Do List</h1>
+    <div class="sub" id="today"></div>
+
+    <!-- Add task form -->
+    <div class="add">
+      <div class="field task-field">
+        <label for="fTask">Task</label>
+        <input type="text" id="fTask" placeholder="Add a new task...">
+      </div>
+      <div class="field">
+        <label for="fCat">Category</label>
+        <select id="fCat">
+          <option>Study</option>
+          <option>Coding</option>
+          <option>Work</option>
+          <option>Personal</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="fPri">Priority</label>
+        <select id="fPri">
+          <option>High</option>
+          <option selected>Medium</option>
+          <option>Low</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="fDue">Due date</label>
+        <input type="date" id="fDue">
+      </div>
+      <div class="field">
+        <label for="fEst">Est. (min)</label>
+        <input type="number" id="fEst" min="1" value="30">
+      </div>
+      <div class="field btn-field">
+        <button id="addBtn">Add</button>
+      </div>
+    </div>
+
+    <!-- Filters and sorting -->
+    <div class="bar">
+      <div class="tabs" id="tabs"></div>
+      <div class="selects">
+        <select id="catFilter">
+          <option value="All">All categories</option>
+          <option>Study</option>
+          <option>Coding</option>
+          <option>Work</option>
+          <option>Personal</option>
+        </select>
+        <select id="sortBy">
+          <option value="added">Sort: Added</option>
+          <option value="pri">Sort: Priority</option>
+          <option value="due">Sort: Due date</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <!-- Task table -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Task</th>
+            <th>Category</th>
+            <th>Priority</th>
+            <th>Due</th>
+            <th>Est.</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Time taken</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="taskBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
