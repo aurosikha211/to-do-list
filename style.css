@@ -48,7 +48,7 @@ h1 {
 /* ---------- Add form ---------- */
 .add {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto;
+  grid-template-columns: 2fr 1.6fr 1fr 1fr 1fr auto;
   gap: 8px;
   margin-bottom: 16px;
 }
@@ -79,6 +79,49 @@ h1 {
 
 .btn-field {
   align-self: end;
+}
+
+/* ---------- Category + button ---------- */
+.cat-row {
+  display: flex;
+  gap: 6px;
+}
+
+.cat-row[hidden] {
+  display: none;
+}
+
+.field .cat-row select,
+.field .cat-row input {
+  flex: 1;
+  width: auto;
+  min-width: 0;
+}
+
+.cat-row button {
+  flex: 0 0 auto;
+  width: 38px;
+  border: none;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.cat-row button:hover {
+  background: #5568d3;
+}
+
+#cancelCatBtn {
+  background: var(--row);
+  color: var(--muted);
+  border: 2px solid var(--line);
+}
+
+#cancelCatBtn:hover {
+  background: var(--line);
 }
 
 button {
