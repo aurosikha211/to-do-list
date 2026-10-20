@@ -19,12 +19,15 @@
       </div>
       <div class="field">
         <label for="fCat">Category</label>
-        <select id="fCat">
-          <option>Study</option>
-          <option>Coding</option>
-          <option>Work</option>
-          <option>Personal</option>
-        </select>
+        <div class="cat-row" id="catSelectRow">
+          <select id="fCat"></select>
+          <button type="button" id="newCatBtn" title="Create a new category">+</button>
+        </div>
+        <div class="cat-row" id="catNewRow" hidden>
+          <input type="text" id="newCatInput" placeholder="New category" maxlength="20">
+          <button type="button" id="saveCatBtn" title="Save category">✓</button>
+          <button type="button" id="cancelCatBtn" title="Cancel">✕</button>
+        </div>
       </div>
       <div class="field">
         <label for="fPri">Priority</label>
@@ -53,10 +56,6 @@
       <div class="selects">
         <select id="catFilter">
           <option value="All">All categories</option>
-          <option>Study</option>
-          <option>Coding</option>
-          <option>Work</option>
-          <option>Personal</option>
         </select>
         <select id="sortBy">
           <option value="added">Sort: Added</option>
