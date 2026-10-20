@@ -11,6 +11,14 @@ const sortBy = document.getElementById("sortBy");
 const statsBox = document.getElementById("stats");
 const taskBody = document.getElementById("taskBody");
 
+// new-category controls
+const catSelectRow = document.getElementById("catSelectRow");
+const catNewRow = document.getElementById("catNewRow");
+const newCatInput = document.getElementById("newCatInput");
+const newCatBtn = document.getElementById("newCatBtn");
+const saveCatBtn = document.getElementById("saveCatBtn");
+const cancelCatBtn = document.getElementById("cancelCatBtn");
+
 document.getElementById("today").textContent =
   new Date().toLocaleDateString([], {
     weekday: "long",
@@ -34,6 +42,82 @@ function save() {
   try {
     localStorage.setItem("todoTasksV2", JSON.stringify(tasks));
   } catch (e) {}
+}
+
+// ---------- Categories ----------
+const defaultCategories = ["Study", "Coding", "Work", "Personal"];
+let customCategories = [];
+
+try {
+  customCategories = JSON.parse(localStorage.getItem("todoCategories")) || [];
+} catch (e) {
+  customCategories = [];
+}
+
+function saveCategories() {
+  try {
+    localStorage.setItem("todoCategories", JSON.stringify(customCategories));
+  } catch (e) {}
+}
+
+function allCategories() {
+  return defaultCategories.concat(customCategories);
+}
+
+function makeOption(value, label) {
+  const opt = document.createElement("option");
+  opt.value = value;
+  opt.textContent = label;
+  return opt;
+}
+
+// Rebuild both dropdowns (add form + filter) from the category list
+function fillCategoryLists(selectName) {
+  const formValue = selectName || catInput.value;
+  const filterValue = catFilter.value || "All";
+  const names = allCategories();
+
+  catInput.innerHTML = "";
+  catFilter.innerHTML = "";
+  catFilter.appendChild(makeOption("All", "All categories"));
+
+  names.forEach(name => {
+    catInput.appendChild(makeOption(name, name));
+    catFilter.appendChild(makeOption(name, name));
+  });
+
+  catInput.value = names.includes(formValue) ? formValue : defaultCategories[0];
+  catFilter.value = filterValue === "All" || names.includes(filterValue) ? filterValue : "All";
+}
+
+function openNewCategory() {
+  catSelectRow.hidden = true;
+  catNewRow.hidden = false;
+  newCatInput.value = "";
+  newCatInput.focus();
+}
+
+function closeNewCategory() {
+  catNewRow.hidden = true;
+  catSelectRow.hidden = false;
+}
+
+function saveNewCategory() {
+  const name = newCatInput.value.trim().replace(/\s+/g, " ");
+  if (!name) return;
+
+  // if it already exists (any capitalisation), just select it
+  const existing = allCategories().find(c => c.toLowerCase() === name.toLowerCase());
+  if (existing) {
+    fillCategoryLists(existing);
+    closeNewCategory();
+    return;
+  }
+
+  customCategories.push(name);
+  saveCategories();
+  fillCategoryLists(name);
+  closeNewCategory();
 }
 
 // ---------- Helpers ----------
@@ -260,4 +344,13 @@ taskInput.addEventListener("keydown", e => {
 catFilter.addEventListener("change", render);
 sortBy.addEventListener("change", render);
 
+newCatBtn.addEventListener("click", openNewCategory);
+saveCatBtn.addEventListener("click", saveNewCategory);
+cancelCatBtn.addEventListener("click", closeNewCategory);
+newCatInput.addEventListener("keydown", e => {
+  if (e.key === "Enter") saveNewCategory();
+  if (e.key === "Escape") closeNewCategory();
+});
+
+fillCategoryLists();
 render();
