@@ -309,3 +309,113 @@ input[type="checkbox"] {
     color: #c9d0ff;
   }
 }
+
+/* ---------- Task counters ---------- */
+.counters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.counter {
+  flex: 1 1 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  border-radius: 12px;
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+.counter strong {
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+.counter span {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.9;
+}
+
+.c-total   { background: linear-gradient(135deg, #667eea, #764ba2); }
+.c-pending { background: linear-gradient(135deg, #fbbf24, #d97706); }
+.c-done    { background: linear-gradient(135deg, #34d399, #15803d); }
+.c-over    { background: linear-gradient(135deg, #fb7185, #be123c); }
+
+/* ---------- Category buttons ---------- */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.chips button {
+  padding: 6px 14px;
+  border: 2px solid var(--line);
+  border-radius: 20px;
+  background: var(--row);
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.chips button:hover {
+  border-color: var(--accent);
+}
+
+.chips button.on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* ---------- Edit task ---------- */
+.btn-edit {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.edit-input {
+  width: 100%;
+  min-width: 80px;
+  padding: 6px;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--text);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+}
+
+.edit-input:focus {
+  border-color: var(--accent);
+}
+
+.btn-save,
+.btn-cancel {
+  border: none;
+  border-radius: 8px;
+  padding: 5px 9px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn-save {
+  background: var(--ok);
+  color: #fff;
+}
+
+.btn-cancel {
+  background: var(--line);
+  color: var(--text);
+  margin-left: 4px;
+}
