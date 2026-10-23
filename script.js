@@ -5,12 +5,15 @@ const priInput = document.getElementById("fPri");
 const dueInput = document.getElementById("fDue");
 const estInput = document.getElementById("fEst");
 const addBtn = document.getElementById("addBtn");
+const clockBox = document.getElementById("clock");
 const countersBox = document.getElementById("counters");
-const tabsBox = document.getElementById("tabs");
 const chipsBox = document.getElementById("catChips");
 const sortBy = document.getElementById("sortBy");
 const statsBox = document.getElementById("stats");
-const taskBody = document.getElementById("taskBody");
+const pendingBody = document.getElementById("pendingBody");
+const completedBody = document.getElementById("completedBody");
+const pendingCount = document.getElementById("pendingCount");
+const completedCount = document.getElementById("completedCount");
 
 // new-category controls
 const catSelectRow = document.getElementById("catSelectRow");
@@ -30,7 +33,6 @@ document.getElementById("today").textContent =
 
 // ---------- Data ----------
 let tasks = [];
-let statusFilter = "All";
 let categoryFilter = "All";
 let editingId = null; // id of the task being edited (null = none)
 const priorityRank = { High: 0, Medium: 1, Low: 2 };
@@ -139,16 +141,6 @@ function todayString() {
   return d.getFullYear() + "-" + m + "-" + day;
 }
 
-function getStatus(task) {
-  if (task.end) return "Completed";
-  if (task.start) return "In Progress";
-  return "Not Started";
-}
-
-function matchesStatus(task) {
-  return statusFilter === "All" || getStatus(task) === statusFilter;
-}
-
 function matchesCategory(task) {
   return categoryFilter === "All" || task.cat === categoryFilter;
 }
@@ -162,6 +154,50 @@ function getTook(task) {
   }
   if (task.start) return { text: "In progress...", cls: "" };
   return { text: "--", cls: "" };
+}
+
+// ---------- Live clock and running timers ----------
+function formatStopwatch(ms) {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  return (
+    String(h).padStart(2, "0") + ":" +
+    String(m).padStart(2, "0") + ":" +
+    String(s).padStart(2, "0")
+  );
+}
+
+// updates one ticking timer element (red once it passes the estimate)
+function updateTimerEl(el) {
+  const elapsed = Date.now() - Number(el.dataset.start);
+  el.textContent = "⏱ " + formatStopwatch(elapsed);
+  el.classList.toggle("over", elapsed / 60000 > Number(el.dataset.est));
+}
+
+// fills the "Time taken" cell: ticking timer if running, fixed time if finished
+function fillTookCell(td, task) {
+  if (task.start && !task.end) {
+    const span = document.createElement("span");
+    span.className = "live-timer";
+    span.dataset.start = task.start;
+    span.dataset.est = task.est;
+    td.appendChild(span);
+    updateTimerEl(span);
+  } else {
+    const took = getTook(task);
+    td.className = took.cls;
+    td.textContent = took.text;
+  }
+}
+
+// runs every second: updates the clock and all running timers
+function tick() {
+  clockBox.textContent =
+    "🕒 " +
+    new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  document.querySelectorAll(".live-timer").forEach(updateTimerEl);
 }
 
 // ---------- Actions ----------
@@ -248,30 +284,9 @@ function renderCounters() {
   });
 }
 
-function renderTabs() {
-  tabsBox.innerHTML = "";
-  const base = tasks.filter(matchesCategory);
-
-  ["All", "Not Started", "In Progress", "Completed"].forEach(name => {
-    const count = name === "All"
-      ? base.length
-      : base.filter(t => getStatus(t) === name).length;
-
-    const btn = document.createElement("button");
-    btn.textContent = name + " (" + count + ")";
-    if (name === statusFilter) btn.className = "on";
-    btn.addEventListener("click", () => {
-      statusFilter = name;
-      editingId = null;
-      render();
-    });
-    tabsBox.appendChild(btn);
-  });
-}
-
 function renderChips() {
   chipsBox.innerHTML = "";
-  const base = tasks.filter(matchesStatus);
+  const base = tasks;
 
   ["All"].concat(allCategories()).forEach(name => {
     const count = name === "All"
@@ -352,8 +367,6 @@ function buildEditRow(task) {
     });
   });
 
-  const took = getTook(task);
-
   cell("✎");
   cell(textIn);
   cell(catSel);
@@ -362,7 +375,7 @@ function buildEditRow(task) {
   cell(estIn);
   cell(formatTime(task.start));
   cell(formatTime(task.end));
-  cell(took.text).className = took.cls;
+  fillTookCell(cell(null), task);
 
   const saveBtn = document.createElement("button");
   saveBtn.className = "btn-save";
@@ -387,7 +400,6 @@ function buildRow(task, today) {
   if (task.end) tr.className = "done";
 
   const isOverdue = task.due && task.due < today && !task.end;
-  const took = getTook(task);
 
   // checkbox cell
   const tdCheck = document.createElement("td");
@@ -427,8 +439,7 @@ function buildRow(task, today) {
   tdEnd.textContent = formatTime(task.end);
 
   const tdTook = document.createElement("td");
-  tdTook.className = took.cls;
-  tdTook.textContent = took.text;
+  fillTookCell(tdTook, task);
 
   // actions cell
   const tdAct = document.createElement("td");
@@ -461,22 +472,17 @@ function buildRow(task, today) {
   return tr;
 }
 
-function render() {
-  renderCounters();
-  renderTabs();
-  renderChips();
-
-  // filter
-  let list = tasks.filter(t => matchesStatus(t) && matchesCategory(t));
-
-  // sort
+function sortList(list) {
   if (sortBy.value === "pri") {
     list.sort((a, b) => priorityRank[a.pri] - priorityRank[b.pri]);
   } else if (sortBy.value === "due") {
     list.sort((a, b) => (a.due || "9999").localeCompare(b.due || "9999"));
   }
+  return list;
+}
 
-  taskBody.innerHTML = "";
+function fillSection(body, list, emptyText, today) {
+  body.innerHTML = "";
 
   if (list.length === 0) {
     const tr = document.createElement("tr");
@@ -485,21 +491,43 @@ function render() {
     td.className = "empty";
     td.style.borderLeft = "none";
     td.style.borderRadius = "10px";
-    td.textContent = "No tasks here. Add your first one!";
+    td.textContent = emptyText;
     tr.appendChild(td);
-    taskBody.appendChild(tr);
+    body.appendChild(tr);
+    return;
   }
-
-  const today = todayString();
 
   list.forEach(task => {
     const row = task.id === editingId ? buildEditRow(task) : buildRow(task, today);
-    taskBody.appendChild(row);
+    body.appendChild(row);
   });
+}
+
+function render() {
+  renderCounters();
+  renderChips();
+
+  const today = todayString();
+  const visible = tasks.filter(matchesCategory);
+
+  // split into two sections
+  const pending = sortList(visible.filter(t => !t.end));
+  const completed = sortList(visible.filter(t => t.end));
+
+  // newest finished task first (when sorting by "Added")
+  if (sortBy.value === "added") {
+    completed.sort((a, b) => b.end - a.end);
+  }
+
+  pendingCount.textContent = pending.length;
+  completedCount.textContent = completed.length;
+
+  fillSection(pendingBody, pending, "No pending tasks. Add one above!", today);
+  fillSection(completedBody, completed, "No completed tasks yet.", today);
 
   // put the cursor in the task box when editing starts
   if (editingId !== null) {
-    const box = taskBody.querySelector(".edit-text");
+    const box = document.querySelector(".edit-text");
     if (box) box.focus();
   }
 
@@ -533,3 +561,5 @@ newCatInput.addEventListener("keydown", e => {
 
 fillCategoryLists();
 render();
+tick();
+setInterval(tick, 1000);

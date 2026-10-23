@@ -419,3 +419,67 @@ input[type="checkbox"] {
   color: var(--text);
   margin-left: 4px;
 }
+
+/* ---------- Pending / Completed sections ---------- */
+.bar .chips {
+  margin-bottom: 0;
+}
+
+.section {
+  margin-top: 22px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  padding-bottom: 6px;
+  border-bottom: 3px solid var(--accent);
+}
+
+.pending-title {
+  border-bottom-color: var(--warn);
+}
+
+.completed-title {
+  border-bottom-color: var(--ok);
+}
+
+.section-title .count {
+  background: var(--accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 20px;
+}
+
+.pending-title .count {
+  background: var(--warn);
+}
+
+.completed-title .count {
+  background: var(--ok);
+}
+
+/* ---------- Live clock and running timer ---------- */
+.clock {
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+  margin: -10px 0 16px;
+}
+
+.live-timer {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: #d97706;
+}
+
+.live-timer.over {
+  color: var(--bad);
+}
